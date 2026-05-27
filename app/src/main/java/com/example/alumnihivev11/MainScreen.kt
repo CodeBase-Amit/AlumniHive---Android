@@ -66,13 +66,14 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.alumnihivev11.Navigation.Navigation
 import com.example.alumnihivev11.Navigation.Routes
-import com.example.alumnihivev11.NavigationDrawer.DrawerHeader
 import com.example.alumnihivev11.ui.theme.customFontFamily
 import com.example.bottombar.AnimatedBottomBar
 import com.example.bottombar.components.BottomBarItem
 import com.example.bottombar.model.IndicatorDirection
 import com.example.bottombar.model.IndicatorStyle
 import kotlinx.coroutines.launch
+import com.example.alumnihivev11.screens.*
+import com.example.alumnihivev11.NavigationDrawer.DrawerHeader
 
 data class BottomNavigationItem(
     val name: String,
@@ -109,9 +110,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             icon = Icons.Default.Book,
             unselectedIcon = Icons.Outlined.Book
         ),
-
-
-        )
+    )
 
     val drawerState = rememberDrawerState(
         initialValue = DrawerValue.Closed
@@ -134,6 +133,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     selected = false,
                     onClick = {
                         navController.navigate(Routes.Profile)
+                        scope.launch { drawerState.close() }
                     }
                 )
 
@@ -142,7 +142,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         Text("Chat")
                     },
                     selected = false,
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(Routes.Chat)
+                        scope.launch { drawerState.close() }
+                    }
                 )
 
                 NavigationDrawerItem(
@@ -150,16 +153,42 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         Text("Notifications")
                     },
                     selected = false,
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(Routes.Notifications)
+                        scope.launch { drawerState.close() }
+                    }
                 )
 
                 NavigationDrawerItem(
                     label = {
-                        Text("SignUp")
+                        Text("Questions")
                     },
                     selected = false,
                     onClick = {
-                        navController.navigate(Routes.SignUp)
+                        navController.navigate(Routes.Questions)
+                        scope.launch { drawerState.close() }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = {
+                        Text("Events")
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate(Routes.Events)
+                        scope.launch { drawerState.close() }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = {
+                        Text("Alumni Directory")
+                    },
+                    selected = false,
+                    onClick = {
+                        navController.navigate(Routes.Alumni)
+                        scope.launch { drawerState.close() }
                     }
                 )
 
@@ -168,7 +197,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         Text("Settings")
                     },
                     selected = false,
-                    onClick = {}
+                    onClick = {
+                        navController.navigate(Routes.Settings)
+                        scope.launch { drawerState.close() }
+                    }
                 )
 
                 NavigationDrawerItem(
@@ -216,10 +248,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         }) { Icon(Icons.Default.Menu, contentDescription = "Menu") }
                     },
                     actions = {
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navController.navigate(Routes.Chat)
+                        }) {
                             Icon(Icons.Default.Chat, contentDescription = "Chat Button")
                         }
-                        IconButton(onClick = {}) {
+                        IconButton(onClick = {
+                            navController.navigate(Routes.Notifications)
+                        }) {
                             Icon(
                                 Icons.Default.Notifications,
                                 contentDescription = "Chat Notifications"
@@ -274,38 +310,61 @@ fun MainScreen(modifier: Modifier = Modifier) {
                 }
             }
         ) { innerpadding ->
-//            ContentScreen(modifier = Modifier.padding(innerpadding), selectedItem)
             Box(modifier = Modifier
                 .fillMaxSize()
                 .padding(innerpadding)) {
-//
-                NavHost(navController = navController, startDestination = Navigation.Main){
+                NavHost(navController = navController, startDestination = Routes.Home){
 
-                    navigation<Navigation.Main>(startDestination = Routes.Home){
+                    composable<Routes.Home>{
+                        DashboardScreen(navController = navController)
+                    }
 
-                        composable<Routes.Home>{
-                            HomeScreen(navController = navController)
-                        }
+                    composable<Routes.Communities>{
+                        CommunitiesListScreen(navController = navController)
+                    }
 
-                        composable<Routes.Communities>{
-                            CommunitiesScreen(navController = navController)
-                        }
+                    composable<Routes.Mentorship>{
+                        MentorshipListScreen(navController = navController)
+                    }
 
-                        composable<Routes.Mentorship>{
-                            MentorshipScreen(navController = navController)
-                        }
+                    composable<Routes.Blogs>{
+                        BlogsListScreen(navController = navController)
+                    }
 
-                        composable<Routes.Blogs>{
-                            BlogsScreen(navController = navController)
-                        }
+                    composable<Routes.Events>{
+                        EventsListScreen(navController = navController)
+                    }
 
-                        composable<Routes.Profile>{
-                            ProfileCreationScreen(navController = navController)
-                        }
+                    composable<Routes.Chat>{
+                        ChatListScreen(navController = navController)
+                    }
 
-                        composable<Routes.SignUp>{
-                            SignUpScreen(navController = navController)
-                        }
+                    composable<Routes.Notifications>{
+                        NotificationsScreen(navController = navController)
+                    }
+
+                    composable<Routes.Questions>{
+                        QuestionsListScreen(navController = navController)
+                    }
+
+                    composable<Routes.Profile>{
+                        ProfileScreen(navController = navController)
+                    }
+
+                    composable<Routes.Settings>{
+                        SettingsScreen(navController = navController)
+                    }
+
+                    composable<Routes.Alumni>{
+                        AlumniDirectoryScreen(navController = navController)
+                    }
+
+                    composable<Routes.Search>{
+                        SearchScreen(navController = navController)
+                    }
+
+                    composable<Routes.SignUp>{
+                        RegisterScreen(navController = navController)
                     }
                 }
             }
