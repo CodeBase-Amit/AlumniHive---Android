@@ -83,7 +83,7 @@ class BackendRepository private constructor(
 
     suspend fun currentUser(): User {
         api.getMe().user?.let { return it.toUiUser() }
-        sessionManager.currentUser()?.let { return it.toUiUser() }
+        sessionManager.currentUser()?.let { return it }
         throw BackendException("Unable to load current user")
     }
 

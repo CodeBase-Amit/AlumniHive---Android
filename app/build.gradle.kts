@@ -76,7 +76,16 @@ dependencies {
 
     implementation("com.canopas.compose-animated-navigationbar:bottombar:1.0.1")
 
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.retrofit.kotlinx.serialization)
+
     // Image Loading
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 }
