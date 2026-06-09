@@ -20,8 +20,40 @@ data class ApiRegisterRequestDto(
     val college: String,
     val role: String,
     val department: String? = null,
-    @SerialName("graduation_year")
     val graduationYear: Int? = null
+)
+
+// ==================== Sub-DTOs for nested backend structures ====================
+
+@Serializable
+data class EventLocationDto(
+    val type: String = "online",
+    val venue: String = "",
+    val address: String = "",
+    val city: String = "",
+    val meetingLink: String = ""
+)
+
+@Serializable
+data class CommunityStatsDto(
+    val totalMembers: Int = 0,
+    val totalMessages: Int = 0,
+    val totalEvents: Int = 0
+)
+
+@Serializable
+data class ApiBlogCommentDto(
+    val content: String = ""
+)
+
+@Serializable
+data class ApiEventAttendeeDto(
+    val status: String = "registered"
+)
+
+@Serializable
+data class ApiAnswerDto(
+    val content: String = ""
 )
 
 // ==================== Response DTOs ====================
@@ -36,18 +68,17 @@ data class ApiAuthResponseDto(
 
 @Serializable
 data class ApiUserDto(
-    val id: String,
-    val name: String,
-    val email: String,
+    val id: String = "",
+    val name: String = "",
+    val email: String = "",
     val avatar: String = "",
     val bio: String? = null,
-    val role: String,
-    val college: String,
+    val role: String = "",
+    val college: String = "",
     val department: String? = null,
-    val batch: Int? = null,
+    val graduationYear: Int? = null,
     val skills: List<String> = emptyList(),
     val interests: List<String> = emptyList(),
-    @SerialName("is_online")
     val isOnline: Boolean = false,
     @SerialName("linkedin")
     val linkedIn: String? = null,
@@ -64,7 +95,7 @@ fun ApiUserDto.toUiUser(): User = User(
     role = role,
     college = college,
     department = department,
-    batch = batch,
+    batch = graduationYear,
     skills = skills,
     interests = interests,
     isOnline = isOnline,
@@ -75,22 +106,17 @@ fun ApiUserDto.toUiUser(): User = User(
 
 @Serializable
 data class ApiBlogDto(
-    val id: String,
-    val title: String,
-    val excerpt: String,
-    val content: String,
-    val author: ApiUserDto,
-    @SerialName("cover_image")
+    val id: String = "",
+    val title: String = "",
+    val excerpt: String = "",
+    val content: String = "",
+    val author: ApiUserDto = ApiUserDto(),
     val coverImage: String? = null,
-    val category: String,
-    @SerialName("read_time")
-    val readTime: Int = 5,
-    val likes: Int = 0,
-    val comments: Int = 0,
-    @SerialName("created_at")
+    val category: String = "",
+    val readTime: Int = 0,
+    val likes: List<String> = emptyList(),
+    val comments: List<ApiBlogCommentDto> = emptyList(),
     val createdAt: String = "",
-    @SerialName("is_liked")
-    val isLiked: Boolean = false,
     val slug: String = ""
 )
 
@@ -103,30 +129,24 @@ fun ApiBlogDto.toUiBlog(): Blog = Blog(
     coverImage = coverImage,
     category = category,
     readTime = readTime,
-    likes = likes,
-    comments = comments,
+    likes = likes.size,
+    comments = comments.size,
     createdAt = createdAt,
-    isLiked = isLiked,
+    isLiked = false,
     slug = slug
 )
 
 @Serializable
 data class ApiCommunityDto(
-    val id: String,
-    val name: String,
-    val description: String,
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
     val avatar: String = "",
-    val category: String,
-    @SerialName("total_members")
-    val totalMembers: Int = 0,
-    @SerialName("is_joined")
-    val isJoined: Boolean = false,
-    @SerialName("is_private")
+    val category: String = "",
+    val stats: CommunityStatsDto = CommunityStatsDto(),
     val isPrivate: Boolean = false,
-    @SerialName("created_by")
-    val createdBy: String = "",
-    @SerialName("recent_posts")
-    val recentPosts: Int = 0
+    val creator: ApiUserDto = ApiUserDto(),
+    val isActive: Boolean = true
 )
 
 fun ApiCommunityDto.toUiCommunity(): Community = Community(
@@ -135,30 +155,24 @@ fun ApiCommunityDto.toUiCommunity(): Community = Community(
     description = description,
     avatar = avatar,
     category = category,
-    totalMembers = totalMembers,
-    isJoined = isJoined,
+    totalMembers = stats.totalMembers,
+    isJoined = false,
     isPrivate = isPrivate,
-    createdBy = createdBy,
-    recentPosts = recentPosts
+    createdBy = creator.name,
+    recentPosts = stats.totalEvents
 )
 
 @Serializable
 data class ApiEventDto(
-    val id: String,
-    val title: String,
-    val description: String,
-    @SerialName("start_date")
-    val startDate: String,
-    @SerialName("end_date")
-    val endDate: String,
-    val location: String,
-    @SerialName("location_type")
-    val locationType: String = "online",
+    val id: String = "",
+    val title: String = "",
+    val description: String = "",
+    val startDate: String = "",
+    val endDate: String = "",
+    val location: EventLocationDto = EventLocationDto(),
     val image: String? = null,
-    val attendees: Int = 0,
-    @SerialName("is_registered")
-    val isRegistered: Boolean = false,
-    val organizer: ApiUserDto,
+    val attendees: List<ApiEventAttendeeDto> = emptyList(),
+    val creator: ApiUserDto = ApiUserDto(),
     val status: String = "upcoming"
 )
 
@@ -168,55 +182,63 @@ fun ApiEventDto.toUiEvent(): Event = Event(
     description = description,
     startDate = startDate,
     endDate = endDate,
-    location = location,
-    locationType = locationType,
+    location = buildEventLocationString(location),
+    locationType = location.type,
     image = image,
-    attendees = attendees,
-    isRegistered = isRegistered,
-    organizer = organizer.toUiUser(),
+    attendees = attendees.size,
+    isRegistered = false,
+    organizer = creator.toUiUser(),
     status = status
 )
 
+private fun buildEventLocationString(location: EventLocationDto): String {
+    return when (location.type) {
+        "online" -> location.meetingLink.ifBlank { "Online" }
+        "offline", "hybrid" -> listOfNotNull(location.venue, location.address, location.city)
+            .filter { it.isNotBlank() }
+            .joinToString(", ")
+            .ifEmpty { "Offline" }
+        else -> ""
+    }
+}
+
 @Serializable
 data class ApiQuestionDto(
-    val id: String,
-    val title: String,
-    val description: String,
-    val author: ApiUserDto,
-    val category: String,
+    val id: String = "",
+    val title: String = "",
+    val content: String = "",
+    val author: ApiUserDto = ApiUserDto(),
+    val category: String = "",
     val tags: List<String> = emptyList(),
-    val answers: Int = 0,
+    val answers: List<ApiAnswerDto> = emptyList(),
     val views: Int = 0,
-    val upvotes: Int = 0,
-    @SerialName("created_at")
+    val upvotes: List<String> = emptyList(),
     val createdAt: String = "",
-    @SerialName("is_answered")
-    val isAnswered: Boolean = false
+    val isSolved: Boolean = false
 )
 
 fun ApiQuestionDto.toUiQuestion(): Question = Question(
     id = id,
     title = title,
-    description = description,
+    description = content,
     author = author.toUiUser(),
     category = category,
     tags = tags,
-    answers = answers,
+    answers = answers.size,
     views = views,
-    upvotes = upvotes,
+    upvotes = upvotes.size,
     createdAt = createdAt,
-    isAnswered = isAnswered
+    isAnswered = isSolved
 )
 
 @Serializable
 data class ApiNotificationDto(
-    val id: String,
-    val type: String,
-    val title: String,
-    val message: String,
-    val actor: ApiUserDto? = null,
-    val timestamp: String = "",
-    @SerialName("is_read")
+    val id: String = "",
+    val type: String = "",
+    val title: String = "",
+    val message: String = "",
+    val sender: ApiUserDto? = null,
+    val createdAt: String = "",
     val isRead: Boolean = false,
     val link: String? = null
 )
@@ -226,22 +248,21 @@ fun ApiNotificationDto.toUiNotification(): Notification = Notification(
     type = type,
     title = title,
     message = message,
-    actor = actor?.toUiUser(),
-    timestamp = timestamp,
+    actor = sender?.toUiUser(),
+    timestamp = createdAt,
     isRead = isRead,
     link = link
 )
 
 @Serializable
 data class ApiMentorshipDto(
-    val id: String,
-    val mentor: ApiUserDto,
-    val mentee: ApiUserDto,
-    val status: String,
-    @SerialName("start_date")
+    val id: String = "",
+    val mentor: ApiUserDto = ApiUserDto(),
+    val mentee: ApiUserDto = ApiUserDto(),
+    val status: String = "pending",
     val startDate: String = "",
-    val goal: String = "",
-    val messages: Int = 0
+    val requestMessage: String = "",
+    val goals: List<String> = emptyList()
 )
 
 fun ApiMentorshipDto.toUiMentorship(): Mentorship = Mentorship(
@@ -250,8 +271,8 @@ fun ApiMentorshipDto.toUiMentorship(): Mentorship = Mentorship(
     mentee = mentee.toUiUser(),
     status = status,
     startDate = startDate,
-    goal = goal,
-    messages = messages
+    goal = requestMessage,
+    messages = 0
 )
 
 // ==================== Response Wrappers ====================
@@ -315,4 +336,3 @@ data class ApiMentorshipRequestsResponseDto(
     val success: Boolean = true,
     val requests: List<ApiMentorshipDto> = emptyList()
 )
-

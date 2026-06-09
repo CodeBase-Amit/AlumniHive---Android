@@ -14,21 +14,34 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = IndigoLight,
     secondary = Purple,
-    tertiary = Blue
+    tertiary = Teal,
+    background = SurfaceDark,
+    surface = CardDark,
+    surfaceVariant = Gray700,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = White,
+    onSurface = White,
+    error = Red,
+    onError = White
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = IndigoPrimary,
     secondary = Purple,
-    tertiary = Blue,
+    tertiary = Teal,
     background = Gray50,
-    surface = White,
+    surface = CardLight,
     surfaceVariant = Gray100,
     onPrimary = White,
     onSecondary = White,
     onTertiary = White,
     onBackground = Gray900,
     onSurface = Gray900,
+    onSurfaceVariant = Gray700,
+    outline = Gray300,
+    outlineVariant = Gray200,
     error = Red,
     onError = White
 )
@@ -36,7 +49,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun AlumniHiveV11Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -45,7 +57,6 @@ fun AlumniHiveV11Theme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

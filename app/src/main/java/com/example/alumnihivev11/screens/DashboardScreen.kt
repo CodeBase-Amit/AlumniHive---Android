@@ -19,106 +19,131 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.School
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import android.util.Log
 import androidx.navigation.NavController
 import com.example.alumnihivev11.components.BlogCard
+import com.example.alumnihivev11.components.EventCard
 import com.example.alumnihivev11.components.GradientHeaderCard
-import com.example.alumnihivev11.components.StatCard
-import com.example.alumnihivev11.data.dummy.DummyDataFactory
+import com.example.alumnihivev11.data.models.Blog
+import com.example.alumnihivev11.data.models.Event
+import com.example.alumnihivev11.data.models.User
+import com.example.alumnihivev11.network.BackendRepository
 import com.example.alumnihivev11.ui.theme.Blue
-import com.example.alumnihivev11.ui.theme.Gray100
 import com.example.alumnihivev11.ui.theme.Gray400
+import com.example.alumnihivev11.ui.theme.Gray500
+import com.example.alumnihivev11.ui.theme.Gray800
+import com.example.alumnihivev11.ui.theme.Gray900
 import com.example.alumnihivev11.ui.theme.Green
 import com.example.alumnihivev11.ui.theme.IndigoPrimary
 import com.example.alumnihivev11.ui.theme.Orange
+import com.example.alumnihivev11.ui.theme.Pink
+import com.example.alumnihivev11.ui.theme.SurfaceLight
 import com.example.alumnihivev11.ui.theme.White
 
 @Composable
 fun DashboardScreen(navController: NavController) {
-    val currentUser = DummyDataFactory.getDummyCurrentUser()
-    val recentBlogs = DummyDataFactory.getDummyBlogs(3)
-    val upcomingEvents = DummyDataFactory.getDummyEvents(3)
+    val context = LocalContext.current
+    val repository = remember(context) { BackendRepository.getInstance(context.applicationContext) }
+    var currentUser by remember { mutableStateOf<User?>(null) }
+    var recentBlogs by remember { mutableStateOf<List<Blog>>(emptyList()) }
+    var upcomingEvents by remember { mutableStateOf<List<Event>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        try {
+            currentUser = repository.currentUser()
+            recentBlogs = repository.getBlogs(limit = 3)
+            upcomingEvents = repository.getEvents(status = "upcoming")
+        } catch (e: Exception) {
+            Log.e("DashboardScreen", "Failed to load data", e)
+        }
+        isLoading = false
+    }
+
+    if (isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(SurfaceLight),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Loading...", color = Gray500)
+        }
+        return
+    }
+
+    val displayUser = currentUser ?: return
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(Gray100)
-            .padding(horizontal = 16.dp)
+            .background(SurfaceLight)
+            .padding(horizontal = 20.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // Welcome Header
         item {
             GradientHeaderCard(
-                title = "Welcome back, ${currentUser.name.split(" ").firstOrNull()}! 👋",
+                title = "Welcome back, ${displayUser.name.split(" ").firstOrNull()}!",
                 subtitle = "Explore communities, connect with mentors, and grow your network.",
                 modifier = Modifier.padding(bottom = 24.dp)
             )
         }
 
-        // Stats Grid
         item {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp),
+                    .padding(bottom = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                StatCardSmall(
+                com.example.alumnihivev11.components.StatCard(
                     icon = Icons.Default.People,
                     title = "Communities",
                     value = "5",
                     color = Blue,
                     modifier = Modifier.weight(1f)
                 )
-                StatCardSmall(
+                com.example.alumnihivev11.components.StatCard(
                     icon = Icons.Default.Book,
                     title = "Blogs",
                     value = "12",
                     color = Green,
                     modifier = Modifier.weight(1f)
                 )
-            }
-        }
-
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                StatCardSmall(
-                    icon = Icons.Default.CalendarToday,
+                com.example.alumnihivev11.components.StatCard(
+                    icon = Icons.Default.TrendingUp,
                     title = "Events",
                     value = "8",
                     color = Orange,
                     modifier = Modifier.weight(1f)
                 )
-                StatCardSmall(
+                com.example.alumnihivev11.components.StatCard(
                     icon = Icons.Default.School,
                     title = "Mentors",
                     value = "2",
-                    color = IndigoPrimary,
+                    color = Pink,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
 
-        // Recent Blogs Section
         item {
             Row(
                 modifier = Modifier
@@ -129,12 +154,13 @@ fun DashboardScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Recent Blogs",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Gray900
                 )
                 Text(
-                    text = "View All →",
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "View All",
+                    style = MaterialTheme.typography.labelLarge,
                     color = IndigoPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -150,10 +176,9 @@ fun DashboardScreen(navController: NavController) {
         }
 
         item {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // Upcoming Events Section
         item {
             Row(
                 modifier = Modifier
@@ -164,12 +189,13 @@ fun DashboardScreen(navController: NavController) {
             ) {
                 Text(
                     text = "Upcoming Events",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Gray900
                 )
                 Text(
-                    text = "View All →",
-                    style = MaterialTheme.typography.labelSmall,
+                    text = "View All",
+                    style = MaterialTheme.typography.labelLarge,
                     color = IndigoPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -177,12 +203,10 @@ fun DashboardScreen(navController: NavController) {
         }
 
         items(upcomingEvents) { event ->
-            EventSmallCard(
-                title = event.title,
-                date = event.startDate,
-                location = event.location,
-                attendees = event.attendees,
-                onClick = { }
+            EventCard(
+                event = event,
+                onClick = { },
+                modifier = Modifier.padding(bottom = 12.dp)
             )
         }
 
@@ -191,101 +215,3 @@ fun DashboardScreen(navController: NavController) {
         }
     }
 }
-
-@Composable
-fun StatCardSmall(
-    icon: ImageVector,
-    title: String,
-    value: String,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(color.copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = title,
-                    tint = color,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.labelSmall,
-                color = Gray400
-            )
-            Text(
-                text = value,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun EventSmallCard(
-    title: String,
-    date: String,
-    location: String,
-    attendees: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = date,
-                style = MaterialTheme.typography.labelSmall,
-                color = Gray400
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = location,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Gray400
-                )
-                Text(
-                    text = "$attendees attending",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = IndigoPrimary,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    }
-}
-

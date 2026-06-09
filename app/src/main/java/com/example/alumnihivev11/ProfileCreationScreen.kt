@@ -1,8 +1,6 @@
 package com.example.alumnihivev11
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,21 +15,23 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,11 +42,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.alumnihivev11.Elements.DatePicker
+import com.example.alumnihivev11.ui.theme.Gray300
+import com.example.alumnihivev11.ui.theme.Gray400
+import com.example.alumnihivev11.ui.theme.Gray500
+import com.example.alumnihivev11.ui.theme.Gray800
+import com.example.alumnihivev11.ui.theme.IndigoPrimary
+import com.example.alumnihivev11.ui.theme.White
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,125 +61,106 @@ fun ProfileCreationScreen(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-
-    var name by remember { mutableStateOf("Name...") }
-    var gender by remember {mutableStateOf("Gender...")}
-    var college by remember { mutableStateOf("College Name...") }
-    var graduationYear by remember { mutableStateOf("Graduation Year") }
+    var name by remember { mutableStateOf("") }
+    var gender by remember { mutableStateOf("") }
+    var college by remember { mutableStateOf("") }
+    var graduationYear by remember { mutableStateOf("") }
     var about by remember { mutableStateOf("") }
     val email by remember { mutableStateOf("example@gmail.com") }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.primaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.surface
-                ),
-                title = { Text("Profile Creation") }
+                title = {
+                    Text(
+                        "Profile Creation",
+                        fontWeight = FontWeight.Bold,
+                        color = Gray800
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = White
+                )
             )
-        },
-
-
-        ) { innerpadding ->
-
+        }
+    ) { innerPadding ->
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerpadding)
-
+                .padding(innerPadding)
         ) {
             item {
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = email,
-                    onValueChange = {
-                    },
-                    label = {
-                        Text("Email")
-                    },
-                    placeholder = {Text("example@gmail.com")},
+                    onValueChange = {},
+                    label = { Text("Email") },
+                    placeholder = { Text("example@gmail.com", color = Gray400) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = IndigoPrimary,
+                        unfocusedBorderColor = Gray300,
+                        cursorColor = IndigoPrimary,
+                        focusedContainerColor = White,
+                        unfocusedContainerColor = White
                     ),
+                    shape = RoundedCornerShape(12.dp),
                     singleLine = true,
                     trailingIcon = {
-                        Icon(Icons.Default.Email, contentDescription = "Email")
+                        Icon(Icons.Default.Email, contentDescription = "Email", tint = IndigoPrimary)
                     }
-
                 )
             }
+
             item {
                 Row(
-                    modifier = Modifier
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
                         modifier = Modifier
-                            .size(150.dp)
-                            .clip(CircleShape)
-                            .border(width = 8.dp, color = Color.Black, shape = CircleShape),
+                            .size(120.dp)
+                            .clip(CircleShape),
                         painter = painterResource(R.drawable.profile_icon),
                         contentDescription = "Profile Picture"
                     )
-
-                    Spacer(modifier = Modifier
-                        .size(40.dp))
-
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
+                    Spacer(modifier = Modifier.width(24.dp))
+                    Column(modifier = Modifier.weight(1f)) {
                         OutlinedTextField(
                             value = name,
-                            onValueChange = {newName ->
-                                name = newName
-
-                            },
-                            label = {
-                                Text("Name")
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                focusedTextColor = Color.Black,
-                                unfocusedTextColor = Color.Black,
+                            onValueChange = { name = it },
+                            label = { Text("Name") },
+                            placeholder = { Text("Full Name", color = Gray400) },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = IndigoPrimary,
+                                unfocusedBorderColor = Gray300,
+                                cursorColor = IndigoPrimary,
+                                focusedContainerColor = White,
+                                unfocusedContainerColor = White
                             ),
-                            singleLine = true
-
+                            shape = RoundedCornerShape(12.dp),
+                            singleLine = true,
+                            leadingIcon = {
+                                Icon(Icons.Default.Person, contentDescription = "Name", tint = IndigoPrimary)
+                            }
                         )
-
-                        Spacer(modifier = Modifier
-                            .size(20.dp))
-
+                        Spacer(modifier = Modifier.height(12.dp))
                         OutlinedTextField(
                             value = gender,
-                            onValueChange = {genderType ->
-                                gender = genderType
-
-                            },
-                            label = {
-                                Text("Gender...")
-                            },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.White,
-                                unfocusedContainerColor = Color.White,
-                                focusedTextColor = Color.Black,
-                                unfocusedTextColor = Color.Black,
+                            onValueChange = { gender = it },
+                            label = { Text("Gender") },
+                            placeholder = { Text("Select gender", color = Gray400) },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = IndigoPrimary,
+                                unfocusedBorderColor = Gray300,
+                                cursorColor = IndigoPrimary,
+                                focusedContainerColor = White,
+                                unfocusedContainerColor = White
                             ),
+                            shape = RoundedCornerShape(12.dp),
                             singleLine = true
-
-                            )
-
-
+                        )
                     }
                 }
             }
@@ -182,127 +169,91 @@ fun ProfileCreationScreen(
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = college,
-                    onValueChange = {collegeName ->
-                        college = collegeName
-
-                    },
-                    label = {
-                        Text("College Name")
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
+                    onValueChange = { college = it },
+                    label = { Text("College Name") },
+                    placeholder = { Text("Enter your college", color = Gray400) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = IndigoPrimary,
+                        unfocusedBorderColor = Gray300,
+                        cursorColor = IndigoPrimary,
+                        focusedContainerColor = White,
+                        unfocusedContainerColor = White
                     ),
-                    singleLine = true,
-
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
                 )
-
             }
 
             item {
                 Row(
-                    modifier = Modifier
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     OutlinedTextField(
-                        modifier = Modifier.width(200.dp),
+                        modifier = Modifier.weight(1f),
                         value = graduationYear,
-                        onValueChange = {yearOfPassing ->
-                            graduationYear = yearOfPassing
-
-                        },
-                        label = {
-                            Text("Graduation Year")
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color.White,
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
+                        onValueChange = { graduationYear = it },
+                        label = { Text("Graduation Year") },
+                        placeholder = { Text("YYYY", color = Gray400) },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = IndigoPrimary,
+                            unfocusedBorderColor = Gray300,
+                            cursorColor = IndigoPrimary,
+                            focusedContainerColor = White,
+                            unfocusedContainerColor = White
                         ),
+                        shape = RoundedCornerShape(12.dp),
                         singleLine = true,
                         trailingIcon = {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = "YearOfPassing")
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = "Year", tint = IndigoPrimary)
                         }
-
-
                     )
-
-                    Spacer(modifier = Modifier
-                        .size(20.dp))
-
-                    DatePicker(
-
-                    )
-
+                    DatePicker()
                 }
             }
 
             item {
                 OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth().height(200.dp),
+                    modifier = Modifier.fillMaxWidth().height(160.dp),
                     value = about,
-                    onValueChange = {aboutYourself ->
-                        about = aboutYourself
-
-                    },
-                    label = {
-                        Text("About")
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
+                    onValueChange = { about = it },
+                    label = { Text("About") },
+                    placeholder = { Text("Tell us about yourself", color = Gray400) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = IndigoPrimary,
+                        unfocusedBorderColor = Gray300,
+                        cursorColor = IndigoPrimary,
+                        focusedContainerColor = White,
+                        unfocusedContainerColor = White
                     ),
-                    maxLines = 6
-
+                    shape = RoundedCornerShape(12.dp),
+                    maxLines = 5
                 )
             }
 
-            item(
-
-            ) {
+            item {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Button(
-                        modifier = Modifier.width(300.dp)
-                            .clip(MaterialTheme.shapes.large)
-                            .padding(
-                                start = 12.dp,
-                                end = 16.dp,
-                                top = 12.dp,
-                                bottom = 12.dp
-                            ),
-
-                        shape = MaterialTheme.shapes.medium,
-                        border = BorderStroke(width = 1.dp, color = Color.Gray),
-                        onClick = {
-
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = IndigoPrimary,
+                            contentColor = White
+                        )
                     ) {
-                        Text(text = "Continue")
+                        Text(
+                            text = "Continue",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
-
         }
-
     }
 }
-//
-//@Preview(showSystemUi = true)
-//@Composable
-//fun Preview() {
-//
-//    ProfileCreationScreen()
-//
-//}

@@ -54,12 +54,12 @@ interface BackendApi {
     @GET("events")
     suspend fun getEvents(
         @Query("status") status: String? = null,
-        @Query("community_id") communityId: String? = null
+        @Query("communityId") communityId: String? = null
     ): ApiEventsResponseDto
 
     // ==================== Questions ====================
 
-    @GET("questions")
+    @GET("qa")
     suspend fun getQuestions(
         @Query("search") search: String? = null,
         @Query("category") category: String? = null,
@@ -69,19 +69,19 @@ interface BackendApi {
 
     // ==================== Notifications ====================
 
-    @GET("notifications")
+    @GET("users/notifications")
     suspend fun getNotifications(
-        @Query("unread_only") unreadOnly: Boolean = false
+        @Query("unreadOnly") unreadOnly: Boolean = false
     ): ApiNotificationsResponseDto
 
     // ==================== Mentorships ====================
 
-    @GET("mentorships")
+    @GET("mentorship/my-mentorships")
     suspend fun getMentorships(
         @Query("role") role: String? = null
     ): ApiMentorshipsResponseDto
 
-    @GET("mentorships/requests")
+    @GET("mentorship/requests")
     suspend fun getMentorshipRequests(): ApiMentorshipRequestsResponseDto
 }
 

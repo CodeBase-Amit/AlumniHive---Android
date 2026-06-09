@@ -2,24 +2,23 @@ package com.example.alumnihivev11.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary Indigo/Purple Colors from web (matching #4f46e5)
-val IndigoPrimary = Color(0xFF4f46e5)      // primary-600
-val IndigoLight = Color(0xFF6366f1)        // primary-500
-val IndigoDark = Color(0xFF4338ca)         // primary-700
-val IndigoLightest = Color(0xFFEEF2FF)     // primary-50
-val IndigoSecondaryLight = Color(0xFFE0E7FF) // primary-100
+val IndigoPrimary = Color(0xFF4f46e5)
+val IndigoLight = Color(0xFF6366f1)
+val IndigoDark = Color(0xFF3730a3)
+val IndigoLightest = Color(0xFFEEF2FF)
+val IndigoSecondaryLight = Color(0xFFE0E7FF)
 
-// Secondary & Accent Colors
 val Purple = Color(0xFFa855f7)
 val Blue = Color(0xFF3b82f6)
 val Green = Color(0xFF10b981)
 val Orange = Color(0xFFf97316)
 val Red = Color(0xFFef4444)
+val Pink = Color(0xFFec4899)
+val Teal = Color(0xFF14b8a6)
 
-// Neutral Colors
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
-val Gray50 = Color(0xFFFAFAFA)
+val Gray50 = Color(0xFFF9FAFB)
 val Gray100 = Color(0xFFF3F4F6)
 val Gray200 = Color(0xFFE5E7EB)
 val Gray300 = Color(0xFFD1D5DB)
@@ -27,4 +26,26 @@ val Gray400 = Color(0xFF9CA3AF)
 val Gray500 = Color(0xFF6B7280)
 val Gray600 = Color(0xFF4B5563)
 val Gray700 = Color(0xFF374151)
+val Gray800 = Color(0xFF1F2937)
 val Gray900 = Color(0xFF111827)
+
+val Indigo50 = Color(0xFFEEF2FF)
+val Indigo100 = Color(0xFFE0E7FF)
+val Indigo200 = Color(0xFFC7D2FE)
+val Indigo300 = Color(0xFFA5B4FC)
+val Indigo400 = Color(0xFF818CF8)
+val Indigo500 = Color(0xFF6366F1)
+val Indigo600 = Color(0xFF4F46E5)
+val Indigo700 = Color(0xFF4338CA)
+val Indigo800 = Color(0xFF3730A3)
+val Indigo900 = Color(0xFF312E81)
+
+val Green100 = Color(0xFFDCFCE7)
+val Green700 = Color(0xFF15803D)
+val Yellow100 = Color(0xFFFEF9C3)
+val Yellow700 = Color(0xFFA16207)
+
+val SurfaceLight = Color(0xFFF8F9FE)
+val SurfaceDark = Color(0xFF1A1B2E)
+val CardLight = Color(0xFFFFFFFF)
+val CardDark = Color(0xFF232538)

@@ -1,224 +1,88 @@
 package com.example.alumnihivev11.Elements
 
-
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Book
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.PeopleOutline
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.alumnihivev11.CommunitiesScreen
-import com.example.alumnihivev11.R
-
+import com.example.alumnihivev11.ui.theme.Gray200
+import com.example.alumnihivev11.ui.theme.Gray500
+import com.example.alumnihivev11.ui.theme.Gray800
+import com.example.alumnihivev11.ui.theme.IndigoLightest
+import com.example.alumnihivev11.ui.theme.IndigoPrimary
+import com.example.alumnihivev11.ui.theme.White
 
 @Composable
 fun BlogsCards(
-    modifier: Modifier = Modifier,
     text: String,
     titleText: String,
-    icon: Int,
-    shape: Shape = MaterialTheme.shapes.medium,
-    borderColor: Color = Color.LightGray,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    onClicked: () -> Unit,
+    onClicked: () -> Unit
 ) {
-    var clicked by remember { mutableStateOf(false) }
-    Surface(
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.medium),
-        shape = shape,
-        border = BorderStroke(width = 1.dp, color = borderColor),
-        color = backgroundColor
-
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, Gray200),
+        onClick = onClicked
     ) {
-        ElevatedCard(
-            elevation = CardDefaults.cardElevation(10.dp),
-            modifier = Modifier.fillMaxWidth().height(150.dp)
-                .padding(start = 10.dp,
-                    top = 4.dp,
-                    bottom = 4.dp,
-                    end = 4.dp),
-            shape = shape,
-            onClick = {
-                clicked = !clicked
-                onClicked()
-            }
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                        .animateContentSize(
-                            animationSpec = tween(
-                                durationMillis = 300,
-                                easing = LinearOutSlowInEasing
-                            )
-                        ),
-                ) {
-                    if (!clicked) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp)
-                            .padding(5.dp)
-                    ) {
-                        Icon(
-                            Icons.Default.Book, contentDescription = "Blog Icon",
-                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f)
-                        )
-
-                        Icon(
-                            painter = painterResource(id = icon),
-                            contentDescription = "Google Button",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(25.dp)
-                        )
-                    }
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(8.dp)
-                    ) {
-                        Text(
-                            text = titleText,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black,
-                            maxLines = 2
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .height(120.dp)
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-                        Text(
-                            text = text,
-                            fontSize = 13.sp,
-                            fontStyle = FontStyle.Italic
-                        )
-                        Spacer(
-                            modifier = Modifier.fillMaxHeight().weight(1f)
-                        )
-                        Icon(
-                            Icons.Default.ArrowForward, contentDescription = "To the Community",
-                            modifier = Modifier.fillMaxHeight().width(30.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier.fillMaxHeight().width(20.dp)
-                        )
-
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Icon(
-                            Icons.Default.ArrowForward, contentDescription = "To the Community",
-                            modifier = Modifier.fillMaxHeight().width(30.dp)
-                        )
-                        Spacer(
-                            modifier = Modifier.fillMaxHeight().width(20.dp)
-                        )
-                    }
-                }else {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(300.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text("Opening Blog")
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    strokeWidth = 2.dp
-                                )
-                            }
-
-                        }
-                    }
-
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(IndigoLightest, RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Book,
+                    contentDescription = "Blog",
+                    tint = IndigoPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
+            Spacer(modifier = Modifier.width(14.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = titleText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Gray800
+                )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Gray500
+                )
+            }
+            Icon(
+                Icons.Default.ArrowForward,
+                contentDescription = "Open",
+                tint = IndigoPrimary,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
-
-
-//@Preview(showSystemUi = true)
-//@Composable
-//fun BlogsCardPreview() {
-//    Box(
-//        modifier = Modifier.fillMaxSize(),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        BlogsCards(
-//            text = "Python Learning",
-//            titleText = "Python",
-//            icon = R.drawable.ic_google_logo
-//        ) { }
-//    }
-//}
-//
